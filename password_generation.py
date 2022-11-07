@@ -31,3 +31,6 @@ for i in passwordgnt2:
 
 # SHOWING THE PSW GENERATED 
 print( f"Password: {passwordgnt} ")
+
+
+## VERRSION2 
