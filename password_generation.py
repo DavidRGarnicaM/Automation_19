@@ -1,73 +1,92 @@
+
 import random
 
-def genpass ():
-    # MAIN CHAIN 
-    minus = "abcdefghijklmnopqrstuvwxyz"
-    mayus = minus.upper()
-    numbers = "1234567890"
-    # COMBINED CHAIN
-    combined = minus +mayus + numbers 
-    # POPUP A RANDOM ELEMENT 
-    elemnumber =  random.randint(0,9)
-    elemnumber = numbers[elemnumber]
-    eleminus  =  random.randint(0,24)
-    eleminus = minus[eleminus]
-    elemayus  =  random.randint(0,24)
-    elemayus = mayus[elemayus]
-    # ASIGNING LONG TO THE PSW
-    long = random.randint(8,16)
-    # ADD THE THREE RULES 
-    passwordgnt = "" +eleminus+ elemayus+elemnumber 
-    # GENERATION A COMPLEMENTARY CHAIN
-    passwordgnt2 = random.sample(combined,long-3)
-    # ASINGING ALL THE REST OF CHARACTERS
+from sys import argv
+script, optionvalue , accountname = argv
+
+
+
+def genpass ():    
+    strminus     = "abcdefghijklmnopqrstuvwxyz"
+    strmayus     = strminus.upper()
+    strnumbers   = "1234567890"   
+    combined     = strminus +strmayus + strnumbers   
+    eleminus     = strminus[random.randint(0,24)]
+    elemayus     = strmayus[random.randint(0,24)]
+    elemnumber   = strnumbers[random.randint(0,9)]    
+    passwordgnt  = "" +eleminus+ elemayus+elemnumber
+    longpwd      = random.randint(8,16)
+    passwordgnt2 = random.sample(combined,longpwd-3) 
+
     for i in passwordgnt2:
-        passwordgnt = passwordgnt + i 
-    # SHOWING THE PSW GENERATED 
+        passwordgnt = passwordgnt + i  
+    
     return(passwordgnt)
 
+docname = "pwddoc.txt"
 
-## VERRSION2  
-sML = {"Facebook":"","Twiter":"","Github":""}
+with open(docname) as pwddoc:
+        items =pwddoc.readlines()
+        pwddoc.close()
 
-def smread():
-    smkey =   input("Social Media?")
-    pwsgnt = genpass()
-    sML[smkey] = pwsgnt
-    print("Password Generated!!")
-    print("************************************************")
-def smshow():
-    smkey =   input("Social Media?")
-    print("************************************************")
-    if smkey == "ALL":
-        print(sML)
-
-    elif smkey in sML:
-        print(f"Social Media: {smkey}",f"\nPassword:     {sML[smkey]}")
-    else: 
-        print("The Social Media doesnt exist.  Please try again")
-        smread()
-    
+def adddata():
+    with open("pwddoc.txt", 'w') as temp_file:
+        for item in items:
+            temp_file.write("%s\n" % item.rstrip())
         
+          
+    
 
-def runf():
-    selected_option =0
-    print("************************************************")
-    while  selected_option != 3:
-        print("1 GENERATE PWS")
-        print("2 SHOW  PWS")
-        print("3 EXIT ")
-        print("************************************************")
-        selected_option = int(input("Write an option:"))
-        print("************************************************")
-        if(selected_option ==1):
-            smread()
-        if(selected_option ==2 ):
-            smshow()
-            print("************************************************")            
-        if(selected_option ==3 ):
-            break
-      
+def addpwd():
+    snname = accountname
+    lenname = len(snname)
+    while lenname<8:
+        snname = snname +" "
+        lenname = len(snname)
+    sw=0
+    for x in range(len(items)):
+        if (items[x][4:12])== snname:
+            pwsgnt = genpass()
+            items[x] = items[x][:20].rstrip() +pwsgnt +"\n"
+            print("Password generated!")          
+            sw=1
+            adddata()
+            break       
+    if sw==0:
+        pwsgnt = genpass()
+        naccount = "SN: " + snname + ", PWD :"+pwsgnt
+        items.insert(0,naccount)
+        print("Password generated!")
+        adddata()
+    
+    
 
-runf()
+def showpwd():
+    snname = accountname
+    lenname = len(snname)
+    while lenname<8:
+        snname = snname +" "
+        lenname = len(snname)
+    sw=0
+    for x in range(len(items)):
+        if (items[x][4:12])== snname:
+            print(items[x].rstrip())          
+            sw=1
+            break        
+    if sw==0:
+        print("The account doesnt exist") 
+        
+    
+   
+def runp():
+    selected_option = int(optionvalue)
+    print("--------------------------------------")
+    if selected_option==1:
+        addpwd()
+                    
+    elif selected_option==2:
+        showpwd()           
+    print("--------------------------------------")
+   
+runp()
 
